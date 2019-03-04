@@ -19,20 +19,78 @@
 ## 第三讲 启动、中断、异常和系统调用-思考题
 
 ## 3.1 BIOS
--  x86中BIOS从磁盘读入的第一个扇区是是什么内容？为什么没有直接读入操作系统内核映像？
+- x86中BIOS从磁盘读入的第一个扇区是是什么内容？为什么没有直接读入操作系统内核映像？
+
+  答：第一个扇区是主引导扇区，用于确定读哪一个分区的操作系统。因为一个磁盘上面可能存在很多分区，每个分区对应不同的操作系统，而文件系统不一定能识别各个系统的格式，所以此时需要另外中间加上一层，用于引导至正确的扇区加载操作系统。
+
 - 比较UEFI和BIOS的区别。
+
+  答：BIOS是固定到主板上的程序，功能包括：系统设置，系统自检和系统自启动。而UEFI是指统一的接口标准，包括比如从U盘启动，从局域网启动这种另外的启动方式。
+
+  ​	同时，相比于发展时间更长的BIOS，UEFI优势还有以下三点：
+
+  ​	1. 安全性更强。2. 启动配置更灵活。 3. 支持容量更大。
+
 - 理解rcore中的Berkeley BootLoader (BBL)的功能。
 
 ## 3.2 系统启动流程
 
 - x86中分区引导扇区的结束标志是什么？
+
+  答：结束标志为：0x55AA。
+
 - x86中在UEFI中的可信启动有什么作用？
+
+  答：通过启动前检查相关数字签名，来达到可信启动的目的。
+
 - RV中BBL的启动过程大致包括哪些内容？
 
 ## 3.3 中断、异常和系统调用比较
 - 什么是中断、异常和系统调用？
--  中断、异常和系统调用的处理流程有什么异同？
+
+  答：中断是指来自外部设备请求时，对外部设备的处理；异常是指在计算机内部出现一些诸如除0等不合法操作时的处理；系统调用指的是上层应用程序调用函数库时需要底层的系统提供相应内核态的支持。
+
+- 中断、异常和系统调用的处理流程有什么异同？
+
+  答：	相同点：都会访问到异常处理例程，都会切换到内核态。
+
+  ​	不同点：
+
+   	1. 中断来源于外部设备，异常来源于计算机内部的不合法操作，系统调用来源于应用程序使用底层服务。
+   	2. 中断是异步的，异常是同步的，系统调用是可异步可同步的。
+
 - 以ucore/rcore lab8的answer为例，ucore的系统调用有哪些？大致的功能分类有哪些？
+
+  答：在`lab8_answer/syscall/syscall.c`目录下可以看到所有的系统调用：
+
+  ```
+  static int (*syscalls[])(uint32_t arg[]) = {
+      [SYS_exit]              sys_exit,
+      [SYS_fork]              sys_fork,
+      [SYS_wait]              sys_wait,
+      [SYS_exec]              sys_exec,
+      [SYS_yield]             sys_yield,
+      [SYS_kill]              sys_kill,
+      [SYS_getpid]            sys_getpid,
+      [SYS_putc]              sys_putc,
+      [SYS_pgdir]             sys_pgdir,
+      [SYS_gettime]           sys_gettime,
+      [SYS_lab6_set_priority] sys_lab6_set_priority,
+      [SYS_sleep]             sys_sleep,
+      [SYS_open]              sys_open,
+      [SYS_close]             sys_close,
+      [SYS_read]              sys_read,
+      [SYS_write]             sys_write,
+      [SYS_seek]              sys_seek,
+      [SYS_fstat]             sys_fstat,
+      [SYS_fsync]             sys_fsync,
+      [SYS_getcwd]            sys_getcwd,
+      [SYS_getdirentry]       sys_getdirentry,
+      [SYS_dup]               sys_dup,
+  };
+  ```
+
+  大致分类有：系统管理，文件操作，外设管理，内存管理。
 
 ## 3.4 linux系统调用分析
 - 通过分析[lab1_ex0](https://github.com/chyyuu/ucore_lab/blob/master/related_info/lab1/lab1-ex0.md)了解Linux应用的系统调用编写和含义。(仅实践，不用回答)
@@ -44,10 +102,18 @@
 - 以ucore/rcore lab8的answer为例，分析ucore 应用的系统调用编写和含义。
 - 以ucore/rcore lab8的answer为例，尝试修改并运行ucore OS kernel代码，使其具有类似Linux应用工具`strace`的功能，即能够显示出应用程序发出的系统调用，从而可以分析ucore应用的系统调用执行过程。
 
- 
+
 ## 3.6 请分析函数调用和系统调用的区别
 - 系统调用与函数调用的区别是什么？
+
+  答：
+
+  * 指令上的区别：系统调用指令：`INT`和`IRET`；函数调用指令：`CALL`和`RET`。
+  * 使用时特权级的区别：系统调用指令：使用时会有用户态到核心态的转换以及相应堆栈的转换；函数调用指令则没有。
+  * 性能方面的区别：系统调用指令相较于函数调用指令而言，性能方面更优。
+
 - 通过分析x86中函数调用规范以及`int`、`iret`、`call`和`ret`的指令准确功能和调用代码，比较x86中函数调用与系统调用的堆栈操作有什么不同？
+
 - 通过分析RV中函数调用规范以及`ecall`、`eret`、`jal`和`jalr`的指令准确功能和调用代码，比较x86中函数调用与系统调用的堆栈操作有什么不同？
 
 
