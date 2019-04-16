@@ -10,7 +10,7 @@
 
 1. 处理机调度的功能是什么？
 
- > 选线程：从就绪队列中挑选下一个占用CPU运行的线程
+ > 选线程：从就绪队列中挑选下一个占用CPU运行的**线程** 
 
  > 选CPU：从多个可用CPU中挑选就绪线程可使用的CPU资源
 
@@ -72,7 +72,7 @@
  > 监控调度算法的执行状态、调度结果、算法特征等信息。
 
 ### 15.4 时间片轮转、多级反馈队列、公平共享调度算法和ucore调度框架
- 
+
 1. 尝试描述下列处理机调度算法的工作原理和算法优缺点。
    - 时间片轮转算法（RR）
    - 多级反馈队列算法（MLFQ）
@@ -107,9 +107,8 @@
  > 引入调度框架的目的：分离调度操作和调度策略，以支持多种调度算法；
 
  > 定义调度算法接口的考虑因素：调度算法需要的调度操作类型、调度算法在各调度操作中的体现方式；
- 
-6. 通过观察FIFO、SJF和RR调度算法的[模拟程序](https://github.com/chyyuu/os_tutorial_lab/blob/master/ostep/ostep8-scheduler.py)运行结果及其[描述文档](https://github.com/chyyuu/os_tutorial_lab/blob/master/ostep/ostep8-scheduler.md)，理解其工作原理和算法特征。
 
+6. 通过观察FIFO、SJF和RR调度算法的[模拟程序](https://github.com/chyyuu/os_tutorial_lab/blob/master/ostep/ostep8-scheduler.py)运行结果及其[描述文档](https://github.com/chyyuu/os_tutorial_lab/blob/master/ostep/ostep8-scheduler.md)，理解其工作原理和算法特征。
 7. 通过观察MLFQ调度算法的[模拟程序](https://github.com/chyyuu/os_tutorial_lab/blob/master/ostep/ostep9-mlfq.py)运行结果及其[描述文档](https://github.com/chyyuu/os_tutorial_lab/blob/master/ostep/ostep9-mlfq.md)，理解其工作原理和算法特征。
 
 8. 通过观察彩票调度算法([Lottery scheduling](https://en.wikipedia.org/wiki/Lottery_scheduling))的[模拟程序](https://github.com/chyyuu/os_tutorial_lab/blob/master/ostep/ostep10-lottery.py)运行结果及其[描述文档](https://github.com/chyyuu/os_tutorial_lab/blob/master/ostep/ostep10-lottery.md)，理解其工作原理和算法特征。
@@ -187,7 +186,7 @@
 
  - 何时切换？
  - 如何统计？
- 
+
 #### 执行结果
 
 采用FIFO调度算法
