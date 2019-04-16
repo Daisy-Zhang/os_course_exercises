@@ -27,19 +27,19 @@
 
  > memlayout.h
 
- > #define VPT 0xFAC00000
+>  `#`define VPT 0xFAC00000
 
- > #define KSTACKPAGE 2 // # of pages in kernel stack
+>  `#`define KSTACKPAGE 2 // # of pages in kernel stack
 
- > #define KSTACKSIZE (KSTACKPAGE * PGSIZE) // sizeof kernel stack
+> `#`define KSTACKSIZE (KSTACKPAGE * PGSIZE) // sizeof kernel stack
 
- > #define USERTOP 0xB0000000
+> `#`define USERTOP 0xB0000000
 
- > #define USTACKTOP USERTOP
+> `#`define USTACKTOP USERTOP
 
- > #define USTACKPAGE 256 // # of pages in user stack
+>  `#`define USTACKPAGE 256 // # of pages in user stack
 
- > #define USTACKSIZE (USTACKPAGE * PGSIZE) // sizeof user stack
+>  `#`define USTACKSIZE (USTACKPAGE * PGSIZE) // sizeof user stack
 
 1. (spoc)尝试在panic函数中获取并输出用户栈和内核栈的函数嵌套信息和函数调用参数信息，然后在你希望的地方人为触发panic函数，并输出上述信息。
 
@@ -52,11 +52,16 @@
 1. 在do_execve中的的当前进程如何清空地址空间内容的？在什么时候开始使用新加载进程的地址空间？
 
  > 清空进程地址空间是在initproc所在进程地址空间
- 
+
  > CR3设置成新建好的页表地址后，开始使用新的地址空间
 
 2. 新加载进程的第一级页表的建立代码在哪？
-3. do_execve在处理中是如何正确区分出用户进程和线程的？并为此采取了哪些不同的处理？
+
+> `put_pgdir()`
+
+2. do_execve在处理中是如何正确区分出用户进程和线程的？并为此采取了哪些不同的处理？
+
+> `user_mem_check()`
 
 ### 14.4 执行ELF格式的二进制代码-load_icode的实现
 
@@ -73,9 +78,12 @@
 1. 为什么新进程的内核堆栈可以先于进程地址空间复制进行创建？
 
  > 内核栈在进程的内核地址空间，而各进程的内核地址空间是共享的；
- 
+
 2. 进程复制的代码在哪？复制了哪些内容？
-3. 进程复制过程中有哪些修改？为什么要修改？
+
+> `do_fork()`，复制了：内核栈，内存管理结构体，线程，执行环境上下文
+
+2. 进程复制过程中有哪些修改？为什么要修改？
 
  > 内核栈
 
@@ -92,8 +100,16 @@
 ### 14.6 内存管理的copy-on-write机制
 
 1. 什么是写时复制？
+
+> 父进程`fork`子进程时，不是立即进行一遍复制，而是先存下指向父进程的指针，只有在子进程需要对内容进行更改时，才进行一遍复制
+
 2. 写时复制的页表在什么时候进行复制？共享地址空间和写时复制有什么不同？
+
+> `fork`时进行复制，写时复制在实际复制之前存下的是指向父进程的指针
+
 3. 存在有多个（n>2）进程具有父子关系，且采用了COW机制的情况。这个情况与只有父子两个进程的情况相比，在设计COW时，需要注意的新问题是什么？有何解决方案？
+
+> `fork`时指向父进程的指针的维护，可采用类似链表机制
 
 
 ## 小组练习与思考题
