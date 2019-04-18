@@ -11,33 +11,33 @@
 
  > volatile bool need_resched;                 // bool value: need to be rescheduled to release CPU?
 
- > uint32_t wait_state;                        // waiting state
+ > uint32_t wait_state;                       	 // waiting state
 
- > list_entry_t run_link;                      // the entry linked in run queue
+ > list_entry_t run_link;                      	// the entry linked in run queue
 
- > int time_slice;                             // time slice for occupying the CPU
+ > int time_slice;                             		// time slice for occupying the CPU
 
- > skew_heap_entry_t lab6_run_pool;            // FOR LAB6 ONLY: the entry in the run pool
+ > skew_heap_entry_t lab6_run_pool;   // FOR LAB6 ONLY: the entry in the run pool
 
- > uint32_t lab6_stride;                       // FOR LAB6 ONLY: the current stride of the process
+ > uint32_t lab6_stride;                       	// FOR LAB6 ONLY: the current stride of the process
 
- > uint32_t lab6_priority;                     // FOR LAB6 ONLY: the priority of process, set by lab6_set_priority(uint32_t)
+ > uint32_t lab6_priority;                     	// FOR LAB6 ONLY: the priority of process, set by lab6_set_priority(uint32_t)
 
 2. ucore的就绪队列数据结构在哪定义？在哪进行修改？
 
- > kern/schedule/sched.c
+ > 定义：kern/schedule/sched.c
 
- > static struct run_queue __rq;
+ > 修改：static struct run_queue __rq;
 
 3. ucore的等待队列数据结构在哪定义？在哪进行修改？
 
- > kern/schedule/sched.c
+ > 定义：kern/schedule/sched.c
 
- > static list_entry_t timer_list;
+ > 修改：static list_entry_t timer_list;
 
 4. 尝试跟踪ucore中的调度过程。
 
- > 中断响应、线程的中断现场保存、中断处理、调度触发、当前线程入队、选取下一个运行线程、下一个运行线程出队、线程切换、新线程的中断现场恢复、新线程的继续执行
+ > 调度过程：中断响应、线程的中断现场保存、中断处理、调度触发、当前线程入队、选取下一个运行线程、下一个运行线程出队、线程切换、新线程的中断现场恢复、新线程的继续执行
 
 ### 16.2 调度算法支撑框架
 
@@ -47,25 +47,27 @@
 
 2. 调度函数schedule()的调用函数分析，了解进程调度的原因。请分析ucore中所有可能的调度位置，并说明可能的调用原因。
 
- > do_exit
+ > 调度位置：
+ >
+ > do_exit：进程退出之后需要执行下一个进程
 
- > do_wait
+ > do_wait：一个进程进入等待之后其他进程需要被调度进行执行
 
- > cpu_idle
+ > cpu_idle：CPU进入`ide`状态之后，进程需要相应地被调度
 
- > lock
+ > lock：进入状态`lock`之后，进程需要被调度
 
- > init_main
+ > init_main：`main`初始化时，进程也会被相应初始化调度
 
- > trap
+ > trap：中断执行时进程会受相应影响
 
 ### 16.3 时间片轮转调度算法
 
 1. 时间片轮转调度算法是如何基于调度算法支撑框架实现的？
 
- > kern/schedule/default_sched.c
+ > 算法实现位置：kern/schedule/default_sched.c
 
- > struct sched_class default_sched_class
+ > 基于类：struct sched_class default_sched_class
 
  > 还需要分析并确定调度算法的实现会依赖哪些内核数据和对哪些内核数据有影响；
 
