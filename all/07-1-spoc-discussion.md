@@ -114,10 +114,8 @@
 方案正确性枚举判断：按写变量flag[i]的顺序和变量turn当前值进行情况分类
 
 2. 尝试通过枚举和分类方法检查Peterson算法的正确性。
-
 3. 尝试准确描述Eisenberg同步算法，并通过枚举和分类方法检查其正确性。
-
-4.下列二线程同步机制是否有误？请给出分析．
+4. 下列二线程同步机制是否有误？请给出分析．
 
 ```
 CONCEPT: A shared variable named turn is used to keep track of whose turn it is to enter the critical section.
